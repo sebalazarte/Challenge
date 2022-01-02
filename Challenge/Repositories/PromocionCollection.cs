@@ -48,5 +48,25 @@ namespace Challenge.Repositories
                 .Result
                 .ToListAsync();
         }
+
+        public async Task<List<Promocion>> ObtenerPorVigencia(DateTime? fecha)
+        {
+            var fechaParam = fecha.HasValue ? fecha.Value : DateTime.Now;
+            var filter = Builders<Promocion>.Filter.Where(i => i.FechaInicio <= fechaParam && fechaParam <= i.FechaFin && i.Activo);
+            return await Promociones.FindAsync(filter).Result.ToListAsync();
+        }
+
+        public async Task<List<Promocion>> ObtenerVigentesPorVenta(string medio, string banco, string categoria)
+        {
+            var filter = Builders<Promocion>.Filter
+                .Where(i => i.FechaInicio <= DateTime.Now && DateTime.Now <= i.FechaFin && i.Activo && 
+                       (i.MediosPagos.Contains(medio) || !i.MediosPagos.Any()) &&
+                       (i.Bancos.Contains(banco) || !i.Bancos.Any()) &&
+                       (i.CategoriasProductos.Contains(categoria) || !i.CategoriasProductos.Any()));
+
+            var vigentes = await Promociones.FindAsync(filter).Result.ToListAsync();
+            
+            return vigentes;
+        }
     }
 }

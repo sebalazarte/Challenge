@@ -68,11 +68,11 @@ namespace Challenge.Controllers
                 }
             }
 
-            if (item.CategiriasProductos.Any())
+            if (item.CategoriasProductos.Any())
             {
                 var categorias = await dbCategoria.ObtenerTodos();
                 List<string> categoriasPermitidas = categorias.Select(i => i.Nombre).ToList();
-                foreach (var c in item.CategiriasProductos)
+                foreach (var c in item.CategoriasProductos)
                 {
                     if (!categoriasPermitidas.Contains(c))
                     {
@@ -126,6 +126,20 @@ namespace Challenge.Controllers
         {
             await db.Eliminar(id);
             return Ok("Eliminado");
+        }
+
+        [HttpGet("vigentes/{fecha}")]
+        public async Task<IActionResult> ObtenerVigentes(DateTime? fecha)
+        {
+            var promociones = await db.ObtenerPorVigencia(fecha);
+            return Ok(promociones);
+        }
+
+        [HttpGet("venta/{medio}/{banco}/{categoria}")]
+        public async Task<IActionResult> ObtenerPorVenta(string medio, string banco, string categoria)
+        {
+            var promociones = await db.ObtenerVigentesPorVenta(medio, banco, categoria);
+            return Ok(promociones);
         }
 
     }

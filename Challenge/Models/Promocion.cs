@@ -9,7 +9,7 @@ namespace Challenge.Models
         public ObjectId Id { get; private set; }
         public IEnumerable<string> MediosPagos { get; set; }
         public IEnumerable<string> Bancos { get; set; }
-        public IEnumerable<string> CategiriasProductos { get; private set; }
+        public IEnumerable<string> CategoriasProductos { get; private set; }
         public int? MaximaCantidadCuotas { get; private set; }
         public decimal? ValorInteresCuotas { get; private set; }
         public decimal? PorcentajeDeDescuentos { get; private set; }

@@ -13,5 +13,7 @@ namespace Challenge.Repositories
         Task Eliminar(string id);
         Task<List<Promocion>> ObtenerTodos();
         Task<Promocion> ObtenerPorId(string id);
+        Task<List<Promocion>> ObtenerPorVigencia(DateTime? fecha);
+        Task<List<Promocion>> ObtenerVigentesPorVenta(string medio, string banco, string categoria);
     }
 }
