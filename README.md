@@ -7,7 +7,7 @@ Desafio para entrevista
 - Descargar la coleccion de postman https://www.getpostman.com/collections/d3e36895dbdb016614d2
 
 
-###Nota
+### Nota
 Ya se encuentran generados las coleciones bancos, medios de pagos, categorias y promociones.
 Estoy usando un Servidor MongoDB remoto
 
