@@ -13,7 +13,7 @@ namespace Challenge.Controllers
         private readonly IBancoCollection db = new BancoCollection();
 
         [HttpGet]
-        public async Task<IActionResult> ObtenerTodas()
+        public async Task<IActionResult> ObtenerTodos()
         {
             var bancos = await db.ObtenerTodos();
             return Ok(bancos);
