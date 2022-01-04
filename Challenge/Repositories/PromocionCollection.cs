@@ -32,6 +32,8 @@ namespace Challenge.Repositories
         public async Task Modificar(Promocion item, string id)
         {
             var filter = Builders<Promocion>.Filter.Eq(p => p.Id, new ObjectId(id));
+            item.Id = new ObjectId(id);
+            item.FechaModificacion = DateTime.Now;
             await Promociones.ReplaceOneAsync(filter, item);
         }
 
@@ -51,7 +53,7 @@ namespace Challenge.Repositories
 
         public async Task<List<Promocion>> ObtenerPorVigencia(DateTime? fecha)
         {
-            var fechaParam = fecha.HasValue ? fecha.Value : DateTime.Now;
+            var fechaParam = fecha.HasValue ? fecha.Value : DateTime.Today;
             var filter = Builders<Promocion>.Filter.Where(i => i.FechaInicio <= fechaParam && fechaParam <= i.FechaFin && i.Activo);
             return await Promociones.FindAsync(filter).Result.ToListAsync();
         }
@@ -60,7 +62,7 @@ namespace Challenge.Repositories
         {
             var filter = Builders<Promocion>.Filter
                 .Where(i => i.FechaInicio <= DateTime.Now && DateTime.Now <= i.FechaFin && i.Activo && 
-                       (i.MediosPagos.Contains(medio) || !i.MediosPagos.Any()) &&
+                       (i.MediosDePago.Contains(medio) || !i.MediosDePago.Any()) &&
                        (i.Bancos.Contains(banco) || !i.Bancos.Any()) &&
                        (i.CategoriasProductos.Contains(categoria) || !i.CategoriasProductos.Any()));
 

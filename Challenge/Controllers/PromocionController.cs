@@ -35,12 +35,12 @@ namespace Challenge.Controllers
 
         private async Task<string> ValidarParametros(Promocion item)
         {
-            if (!item.MaximaCantidadCuotas.HasValue && !item.PorcentajeDeDescuentos.HasValue)
+            if (!item.MaximaCantidadDeCuotas.HasValue && !item.PorcentajeDeDescuento.HasValue)
             {
                 return "Cantidad de cuotas o percentaje de descuento: alguno debe tener valor";
             }
 
-            if (!item.MaximaCantidadCuotas.HasValue && item.PorcentajeDeInteres.HasValue)
+            if (!item.MaximaCantidadDeCuotas.HasValue && item.PorcentajeDeInteres.HasValue)
             {
                 return "Porcentaje de interes solo puede tener valor si Cantidad de cuotas tiene valor";
             }
@@ -50,10 +50,20 @@ namespace Challenge.Controllers
                 return "Fecha fin no puede ser menor a fecha inicio";
             }
 
-            if (item.MaximaCantidadCuotas.HasValue && item.PorcentajeDeDescuentos.HasValue)
+            if (item.MaximaCantidadDeCuotas.HasValue && item.PorcentajeDeDescuento.HasValue)
             {
                 return "Cantidad de cuotas o percentaje de descuento: Solo uno debe tener valor";
             }
+
+            if (item.PorcentajeDeDescuento.HasValue)
+            {
+                if(item.PorcentajeDeDescuento < 5 || item.PorcentajeDeDescuento > 80)
+                {
+                    return "El porcentaje de descuento debe estar entre 5 y 80";
+                }
+            }
+
+            //si los valores de bancos, categorias o medios de pago es enviado, tienen que ser dentro de los valores posibles
 
             if (item.Bancos.Any())
             {
@@ -81,11 +91,11 @@ namespace Challenge.Controllers
                 }
             }
 
-            if (item.MediosPagos.Any())
+            if (item.MediosDePago.Any())
             {
                 var medios = await dbMedioPago.ObtenerTodos();
                 var mediosPermitidos = medios.Select(i => i.Nombre).ToList();
-                foreach (var m in item.MediosPagos)
+                foreach (var m in item.MediosDePago)
                 {
                     if (!mediosPermitidos.Contains(m))
                     {
@@ -93,6 +103,18 @@ namespace Challenge.Controllers
                     }
                 }
             }
+
+            var vigentes = await db.ObtenerPorVigencia(null);
+
+            foreach (var promocion in vigentes)
+            {
+               if((promocion.FechaInicio <= item.FechaInicio && item.FechaInicio <= promocion.FechaFin) || 
+                  (promocion.FechaInicio <= item.FechaFin && item.FechaFin <= promocion.FechaFin) &&
+                  promocion.Id != item.Id)
+                {
+                    return $"La promocion se solapa con otra ya existente con fecha de inicio: {promocion.FechaInicio:dd/MM/yyyy} y fecha fin {promocion.FechaFin:dd/MM/yyyy}";
+                }
+            }     
 
             return string.Empty;
         }
@@ -114,6 +136,7 @@ namespace Challenge.Controllers
         {
             if (item == null) return BadRequest();
 
+            item.Id = new ObjectId(id);
             var error = await ValidarParametros(item);
             if (!string.IsNullOrEmpty(error)) return BadRequest(error);
 
@@ -129,9 +152,16 @@ namespace Challenge.Controllers
         }
 
         [HttpGet("vigentes/{fecha}")]
-        public async Task<IActionResult> ObtenerVigentes(DateTime? fecha)
+        public async Task<IActionResult> ObtenerVigentes(DateTime fecha)
         {
             var promociones = await db.ObtenerPorVigencia(fecha);
+            return Ok(promociones);
+        }
+
+        [HttpGet("vigentes/hoy")]
+        public async Task<IActionResult> ObtenerVigentesHoy()
+        {
+            var promociones = await db.ObtenerPorVigencia(null);
             return Ok(promociones);
         }
 
