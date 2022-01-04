@@ -61,7 +61,7 @@ namespace Challenge.Repositories
         public async Task<List<Promocion>> ObtenerVigentesPorVenta(string medio, string banco, string categoria)
         {
             var filter = Builders<Promocion>.Filter
-                .Where(i => i.FechaInicio <= DateTime.Now && DateTime.Now <= i.FechaFin && i.Activo && 
+                .Where(i => i.FechaInicio <= DateTime.Today && DateTime.Today <= i.FechaFin && i.Activo &&
                        (i.MediosDePago.Contains(medio) || !i.MediosDePago.Any()) &&
                        (i.Bancos.Contains(banco) || !i.Bancos.Any()) &&
                        (i.CategoriasProductos.Contains(categoria) || !i.CategoriasProductos.Any()));
