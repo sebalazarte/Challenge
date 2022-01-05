@@ -109,11 +109,6 @@ namespace Challenge.Controllers
                 return "Fecha de incio y fecha fin deben tener valores";
             }
 
-            var vigentes = await db.ObtenerPorRango(item.FechaInicio.Value, item.FechaFin.Value);
-            if (vigentes.Any())
-            {
-                return $"La promocion se solapa con otra ya existente";
-            }
 
             return string.Empty;
         }
@@ -124,6 +119,13 @@ namespace Challenge.Controllers
             if (item == null) return BadRequest();
 
             var error = await ValidarParametros(item);
+
+            var existentes = await db.ObtenerPorRango(item.FechaInicio.Value, item.FechaFin.Value);
+            if (existentes.Any())
+            {
+                return BadRequest("La promocion se solapa con otra ya existente");
+            }
+
             if (!string.IsNullOrEmpty(error)) return BadRequest(error);
 
             await db.Insertar(item);
@@ -138,6 +140,14 @@ namespace Challenge.Controllers
             item.Id = new ObjectId(id);
             var error = await ValidarParametros(item);
             if (!string.IsNullOrEmpty(error)) return BadRequest(error);
+
+            var existentes = await db.ObtenerPorRango(item.FechaInicio.Value, item.FechaFin.Value);
+            existentes = existentes.Where(i => i.Id != new ObjectId(id)).ToList();
+
+            if (existentes.Any())
+            {
+                return BadRequest("La promocion se solapa con otra ya existente");
+            }
 
             await db.Modificar(item, id);
             return Ok("Modificado");
