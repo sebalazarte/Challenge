@@ -15,5 +15,6 @@ namespace Challenge.Repositories
         Task<Promocion> ObtenerPorId(string id);
         Task<List<Promocion>> ObtenerPorVigencia(DateTime? fecha);
         Task<List<Promocion>> ObtenerVigentesPorVenta(string medio, string banco, string categoria);
+        Task<List<Promocion>> ObtenerPorRango(DateTime fechaDesde, DateTime fechaHasta);
     }
 }

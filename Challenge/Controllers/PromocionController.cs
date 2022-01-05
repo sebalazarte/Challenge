@@ -104,17 +104,16 @@ namespace Challenge.Controllers
                 }
             }
 
-            var vigentes = await db.ObtenerPorVigencia(null);
-
-            foreach (var promocion in vigentes)
+            if(!item.FechaInicio.HasValue || !item.FechaFin.HasValue)
             {
-               if((promocion.FechaInicio <= item.FechaInicio && item.FechaInicio <= promocion.FechaFin) || 
-                  (promocion.FechaInicio <= item.FechaFin && item.FechaFin <= promocion.FechaFin) &&
-                  promocion.Id != item.Id)
-                {
-                    return $"La promocion se solapa con otra ya existente con fecha de inicio: {promocion.FechaInicio:dd/MM/yyyy} y fecha fin {promocion.FechaFin:dd/MM/yyyy}";
-                }
-            }     
+                return "Fecha de incio y fecha fin deben tener valores";
+            }
+
+            var vigentes = await db.ObtenerPorRango(item.FechaInicio.Value, item.FechaFin.Value);
+            if (vigentes.Any())
+            {
+                return $"La promocion se solapa con otra ya existente";
+            }
 
             return string.Empty;
         }

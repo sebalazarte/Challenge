@@ -12,6 +12,7 @@ Desafio para entrevista
 - Los Ejercicios se encuentran resueltos en el proyecto ejercicios. Para el ejercicio 4 planteo 2 posibles soluciones: Usando interfaz y clase abstracta.
 - Hice algunos cambios en la entidad Promocion ya que como estaba propuesta en el documento no funciona al momento de recibir el body del post. Tambien uso el ObjectId de MongoDb en vez del GUID
 - Con respecto a las pruebas realice algunas de ejemplo y se encuentran en el proyecto Callenge.Test
+- En un principio me baje la imagen de MongoDB desde la pagina de Docker y trabaje local corriendo esa imagen. Aun no se como crear una imagen del microservicio que tenga el MongoDB adentro por lo que uso un server remoto
 
 La verdad es que recibi este desafio el 31 de diciembre con las fiestas encima y con familia de visitas en casa. 
 Sumado que empece a trabajar el lunes, asi que hice lo mejor que pude en el poco tiempo que tuve para hacerlo. Sepan disculpar. 

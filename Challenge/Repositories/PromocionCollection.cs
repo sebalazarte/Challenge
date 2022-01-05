@@ -70,5 +70,17 @@ namespace Challenge.Repositories
             
             return vigentes;
         }
+
+        public async Task<List<Promocion>> ObtenerPorRango(DateTime fechaDesde, DateTime fechaHasta)
+        {
+            var filter = Builders<Promocion>.Filter
+                .Where(i => i.Activo &&
+                       (fechaDesde <= i.FechaInicio && i.FechaInicio <= fechaHasta) || 
+                       (fechaDesde <= i.FechaInicio && i.FechaFin <= fechaHasta));
+
+            var vigentes = await Promociones.FindAsync(filter).Result.ToListAsync();
+
+            return vigentes;
+        }
     }
 }
